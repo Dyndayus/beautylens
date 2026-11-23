@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About-BeautyLens Classifier</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Header Putih Navigasi -->
+  <header class="top-navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">💄 <span>BeautyLens</span></a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link">Home</a>
+        <a href="about.html" class="nav-link active">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dekorasi Background -->
+  <div class="bg-decor-layer" id="bg-decor-layer">
+    <div class="floating-makeup" style="top: 12%; left: 5%; --size: 2.7rem; --sway-dur: 4.5s; --delay: 0s;">💄</div>
+    <div class="floating-makeup" style="top: 18%; right: 6%; --size: 2.5rem; --sway-dur: 5.2s; --delay: 0.8s;">🪞</div>
+    <div class="floating-makeup" style="bottom: 14%; left: 7%; --size: 2.6rem; --sway-dur: 4.8s; --delay: 1.4s;">🖌️</div>
+    <div class="floating-makeup" style="bottom: 12%; right: 5%; --size: 2.8rem; --sway-dur: 5.5s; --delay: 0.4s;">💋</div>
+  </div>
+
+  <!-- Konten About -->
+  <main class="page-content">
+    <div class="app-wrapper">
+      <div class="header">
+        <h1>Tentang BeautyLens</h1>
+      </div>
+
+      <!-- Deskripsi Tugas / Projek -->
+      <section class="about-desc-card">
+        <h2>Deskripsi Tugas & Sistem</h2>
+        <p>
+          <b>BeautyLens</b> merupakan aplikasi web berbasis kecerdasan buatan (<i>Computer Vision</i>) yang dikembangkan untuk mengklasifikasikan produk makeup ke dalam tiga kategori utama, yaitu <b>Bedak</b>, <b>Brush</b>, dan <b>Lippies</b>.
+        </p>
+        <p>
+          Model dilatih menggunakan algoritma <i>Convolutional Neural Network</i> (CNN) pada 1.500 citra, lalu dikonversi ke format <b>ONNX</b> agar dapat melakukan deteksi secara cepat dan <i>real-time</i> langsung di web tanpa memerlukan server komputasi tambahan.
+        </p>
+      </section>
+
+      <!-- Profil 3 Anggota Tim -->
+      <h2 class="team-section-title">Tim Pengembang</h2>
+      <section class="team-grid">
+        
+        <!-- Anggota 1 -->
+        <div class="member-card">
+          <div class="member-photo-wrap">
+            <img src="./Cute.jpeg" alt="Foto Anggota 1" class="member-photo" onerror="this.src='https://ui-avatars.com/api/?name=Anggota+1&background=fce7f3&color=be185d&size=200'" />
+          </div>
+          <h3 class="member-name">Dynda Ayu Sastika</h3>
+          <div class="member-nim">NIM: 2403111383</div>
+        </div>
+
+        <!-- Anggota 2 -->
+        <div class="member-card">
+          <div class="member-photo-wrap">
+            <img src="./ninok.jpeg" alt="Foto Anggota 2" class="member-photo" onerror="this.src='https://ui-avatars.com/api/?name=Anggota+2&background=f3e8ff&color=7e22ce&size=200'" />
+          </div>
+          <h3 class="member-name">Noerzahra Ramadhani Gusty</h3>
+          <div class="member-nim">NIM: 2403110593</div>
+        </div>
+
+        <!-- Anggota 3 -->
+        <div class="member-card">
+          <div class="member-photo-wrap">
+            <img src="./iput.jpeg" alt="Foto Anggota 3" class="member-photo" onerror="this.src='https://ui-avatars.com/api/?name=Anggota+3&background=ffe4e6&color=e11d48&size=200'" />
+          </div>
+          <h3 class="member-name">Putri Insani Kamelia</h3>
+          <div class="member-nim">NIM: 2403111712</div>
+        </div>
+
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

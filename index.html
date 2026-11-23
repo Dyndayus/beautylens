@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Home-BeautyLens Classifier</title>
+  <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+
+  <!-- Header Putih Navigasi -->
+  <header class="top-navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand">💄 <span>BeautyLens</span></a>
+      <nav class="nav-links">
+        <a href="index.html" class="nav-link active">Home</a>
+        <a href="about.html" class="nav-link">About</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Dekorasi Background -->
+  <div class="bg-decor-layer" id="bg-decor-layer">
+    <div class="floating-makeup" style="top: 12%; left: 5%; --size: 2.7rem; --sway-dur: 4.5s; --delay: 0s;">💄</div>
+    <div class="floating-makeup" style="top: 18%; right: 6%; --size: 2.5rem; --sway-dur: 5.2s; --delay: 0.8s;">🪞</div>
+    <div class="floating-makeup" style="bottom: 14%; left: 7%; --size: 2.6rem; --sway-dur: 4.8s; --delay: 1.4s;">🖌️
+    </div>
+    <div class="floating-makeup" style="bottom: 12%; right: 5%; --size: 2.8rem; --sway-dur: 5.5s; --delay: 0.4s;">💋
+    </div>
+    <div class="floating-makeup" style="top: 50%; left: 2%; --size: 2.1rem; --sway-dur: 6s; --delay: 1.8s;">✨</div>
+    <div class="floating-makeup" style="top: 54%; right: 2%; --size: 2.2rem; --sway-dur: 5.8s; --delay: 2.1s;">🌸</div>
+  </div>
+
+  <!-- Konten Utama -->
+  <main class="page-content">
+    <div class="app-wrapper">
+      <div class="header">
+        <h1>BeautyLens Classifier</h1>
+        <p class="subtitle">Identifikasi otomatis kategori produk kosmetik (<b>Bedak</b>, <b>Brush</b>, &
+          <b>Lippies</b>) secara real-time melalui browsermu 🤗.</p>
+        <div id="model-status" class="status-bar">
+          <span id="status-dot" class="status-dot"></span>
+          <span id="status-text">Memuat model (model_makeup_new.onnx)...</span>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <!-- Kolom Kiri: Input -->
+        <div class="glass-card">
+          <div>
+            <div class="tabs">
+              <button type="button" id="btn-tab-upload" class="tab-btn active">🖼️ Upload Foto</button>
+              <button type="button" id="btn-tab-camera" class="tab-btn">📸 Kamera Live</button>
+            </div>
+
+            <div id="panel-upload" class="panel active">
+              <label for="file-input" class="upload-area" id="upload-dropzone">
+                <div id="upload-placeholder">
+                  <div class="upload-icon-circle">💄</div>
+                  <div style="font-weight: 700; font-size: 1rem; margin-bottom: 4px;">Pilih Foto Produkmu</div>
+                  <div style="font-size: 0.83rem; color: var(--text-muted);">Mendukung format JPG, PNG, atau WEBP</div>
+                </div>
+                <img id="preview-img" alt="Preview Produk Makeup" />
+                <div id="reupload-hint" class="reupload-hint">🔄 Klik gambar untuk mengganti foto lain</div>
+              </label>
+              <input type="file" id="file-input" accept="image/*" style="display:none;" />
+            </div>
+
+            <div id="panel-camera" class="panel">
+              <div class="camera-frame">
+                <div id="cam-placeholder" class="cam-placeholder">Klik <b>Nyalakan</b> untuk membuka kamera</div>
+                <video id="webcam" autoplay playsinline muted></video>
+                <img id="cam-snapshot" alt="Hasil Jepretan Kamera"
+                  style="display:none; width:100%; max-height:280px; object-fit:contain; background:#111827;" />
+              </div>
+              <div class="cam-controls">
+                <button type="button" id="btn-start-cam" class="btn-action">▶️ Nyalakan</button>
+                <button type="button" id="btn-capture-cam" class="btn-action"
+                  style="display:none; background: linear-gradient(135deg, #059669, #10b981);">📸 Ambil &
+                  Analisa</button>
+                <button type="button" id="btn-retake-cam" class="btn-action" style="display:none;">🔄 Foto
+                  Ulang</button>
+                <button type="button" id="btn-stop-cam" class="btn-action secondary">⏹️ Matikan</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="filter-box">
+            <div class="filter-header">
+              <label for="strict-slider" style="font-weight: 700;">🛡️ Filter Benda Asing</label>
+              <span id="strict-val" class="filter-badge">Logit ≥ 3.8</span>
+            </div>
+            <input type="range" id="strict-slider" min="2.0" max="6.0" step="0.2" value="3.8" />
+          </div>
+        </div>
+
+        <!-- Kolom Kanan: Hasil Prediksi -->
+        <div class="glass-card">
+          <div>
+            <div class="result-header">
+              <h2>Hasil Analisis</h2>
+              <span class="model-tag">ONNX Runtime</span>
+            </div>
+
+            <div id="empty-state" class="empty-state">
+              <div class="icon">🔍</div>
+              <div style="font-weight: 700; color: var(--text-main); margin-bottom: 6px;">Menunggu Input Gambar</div>
+              <div style="font-size: 0.85rem; line-height: 1.5;">Unggah foto produk makeup atau nyalakan kamera di
+                sebelah kiri untuk melihat hasil klasifikasi.</div>
+            </div>
+
+            <div id="result-content" class="result-content">
+              <div id="verdict-box" class="verdict-box verdict-valid">
+                <div id="verdict-label" class="verdict-label">Teridentifikasi</div>
+                <div id="pred-title" class="pred-title">-</div>
+                <div id="pred-note" class="pred-note">-</div>
+              </div>
+
+              <div class="bars-title">Persentase Kecocokan</div>
+
+              <div class="bar-group">
+                <div class="bar-label">
+                  <span>Bedak</span>
+                  <span id="prob-0">0%</span>
+                </div>
+                <div class="bar-bg">
+                  <div id="bar-0" class="bar-fill fill-bedak"></div>
+                </div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar-label">
+                  <span>Makeup Brush</span>
+                  <span id="prob-1">0%</span>
+                </div>
+                <div class="bar-bg">
+                  <div id="bar-1" class="bar-fill fill-brush"></div>
+                </div>
+              </div>
+
+              <div class="bar-group">
+                <div class="bar-label">
+                  <span>Lippies</span>
+                  <span id="prob-2">0%</span>
+                </div>
+                <div class="bar-bg">
+                  <div id="bar-2" class="bar-fill fill-lippies"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer-info">
+            <span>Input Tensor: 224×224 RGB</span>
+            <span>3 Kelas Target</span>
+          </div>
+        </div>
+      </div>
+
+      <canvas id="hidden-canvas" width="224" height="224" style="display:none;"></canvas>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+
+</html>
